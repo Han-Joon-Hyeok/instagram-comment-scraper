@@ -41,6 +41,7 @@ for i in range(99) :
             comment_more[i].click()
         else :
             comment_more[i].click()
+            driver.implicitly_wait(3)
         print("클릭을", i + 1, "번 했습니다.")
     except:
         print("답글 불러오기 완료")
@@ -54,6 +55,7 @@ for i in range(99) :
  ## 댓글 내용 : span
 
 # 5 20학번 중 정답자 아이디 수집 (학번 없으면 수집X)
+driver.implicitly_wait(3)
 containers = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK")
 comments = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK span")
 award_list = []
@@ -73,22 +75,24 @@ for i in containers :
     except :
         print("오류 발생")
 
+print("="*20)
 print("총 댓글 개수 : ", len(comments))
 print("정답 및 학번 포함 댓글 수 : ", id_count)
 print("오답 및 학번 없는 댓글 수 : ", len(comments)-id_count)
+print("="*20)
 print("정답자 아이디 명단")
 print(award_list)
+print("="*20)
 
 # 7 당첨자 랜덤 추출
 award = []
 
+print("="*20)
 print("치킨 당첨자 : ")
 for c in range(3):
     pick = r.choice(award_list)
     if pick not in award :
         award.append(pick)
-    else:
-        continue
     print(pick)
 print("="*20)
 
@@ -97,8 +101,6 @@ for b in range(5):
     pick = r.choice(award_list)
     if pick not in award :
         award.append(pick)
-    else:
-        continue
     print(pick)
 print("="*20)
 
@@ -107,8 +109,6 @@ for s in range(7):
     pick = r.choice(award_list)
     if pick not in award :
         award.append(pick)
-    else:
-        continue
     print(pick)
 
 # 8 크롬 창 닫기
