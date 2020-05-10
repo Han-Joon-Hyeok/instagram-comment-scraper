@@ -1,90 +1,115 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 import time
-from bs4 import BeautifulSoup
+import random as r
 
 # 1 웹드라이버 켜기
 driver = webdriver.Chrome("./chromedriver")
 
 # 2 인스타그램 열기
 raw = driver.get("https://www.instagram.com/p/B_6ThCKHP4I/")
-# html = BeautifulSoup(raw.text, 'html.parser')
-
-# 3 댓글 더보기
 driver.implicitly_wait(5)
-# comment_more = driver.find_element_by_css_selector("div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep")
 
-def element_check():
+# 3 댓글 전체 불러오기
+
+## 댓글 불러오는 버튼 반복 클릭
+for i in range(99) :
+    try :
+        comment_more = driver.find_element_by_css_selector("div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep")
+        comment_more.click()
+        driver.implicitly_wait(5)
+        print("클릭을", i + 1, "번 했습니다.")
+    except :
+        print("댓글 전체 불러오기 완료.")
+        break
+
+# 4 답글 전체 불러오기
+comment_more = driver.find_elements_by_css_selector("div.Igw0E > button.sqdOP.yWX7d,y3zJF")
+
+for i in range(99) :
     try:
-        driver.find_element_by_css_selector("div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep")
-        return True
-    except NoSuchElementException:
-        return False
+        more_box = comment_more[i].find_element_by_css_selector("span.EizgU").text
+        count = int(more_box[-3])
+        if count >= 9 :
+            comment_more[i].click()
+            time.sleep(0.2)
+            comment_more[i].click()
+            time.sleep(0.2)
+            comment_more[i].click()
+        elif count >= 4 :
+            comment_more[i].click()
+            driver.implicitly_wait(3)
+            comment_more[i].click()
+        else :
+            comment_more[i].click()
+        print("클릭을", i + 1, "번 했습니다.")
+    except:
+        print("답글 불러오기 완료")
+        break
 
-# print(element_check())
-for i in range(3) :
-    comment_more = driver.find_element_by_css_selector("div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep")
-    comment_more.click()
-    driver.implicitly_wait(5)
-    print("클릭을", i+1, "번 했습니다.")
-
-    # if element_check() == True :
-    #     continue
-    # else :
-    #     print("댓글 불러오기 완료.")
-    #     break
-
-
-## 댓글 더 보기 : div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep (1번 누를 때마다 12개씩 추가됨)
-## 답글 보기 : div.Igw0E > button.sqdOP.yWX7d,y3zJF
-## 댓글 컨테이너 : ul.Mr508 div.C4VMK
+# 댓글 더 보기 : div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep (1번 누를 때마다 12개씩 추가됨)
+# 답글 보기 : div.Igw0E > button.sqdOP.yWX7d,y3zJF
+ ## 답글 갯수 : span.EizgU
+# 댓글 컨테이너 : ul.Mr508 div.C4VMK
  ## 작성자 이름 : a.sqdOP
  ## 댓글 내용 : span
 
+# 5 20학번 중 정답자 아이디 수집 (학번 없으면 수집X)
+containers = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK")
+comments = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK span")
+award_list = []
 
-# 4 게시물 12개 저장
-# posts = driver.find_elements_by_css_selector("div.v1Nh3")
-# posts = posts[:12]
+##  댓글 반복 수집
+id_count = 0
 
-# 5 게시물 반복 수집
-# for p in posts :
-#     p.click()
-#     driver.implicitly_wait(3)
-#     try :
-#         words_box = driver.find_element_by_css_selector("div.C4VMK span").text
-#     except :
-#         words_box = "본문 내용 없음."
-#     print(words_box)
-#     print("="*50)
-#         ## 위에서 사용한 button_close를 다시 재사용.
-#     button_close = driver.find_element_by_css_selector("button.ckWGn").click()
-#
-# driver.close()
+for i in containers :
+    comment = i.find_element_by_css_selector("span")
+    try :
+        std_id = comment.text
+        if "6020" and ("8개" or "8새") in std_id :
+            account = i.find_element_by_css_selector("a.sqdOP").text
+            print(account, "/ 학번 있음 / 정답 O", std_id)
+            id_count += 1
+            award_list.append(account)
+    except :
+        print("오류 발생")
 
-# for n in range(1, 6):
-#     # 컨테이너 : div.section-result-content
-#     cafes = driver.find_elements_by_css_selector("div.section-result-content")
-#
-#     for c in cafes:
-#         # 이름 h3 > span
-#         # 평점 span.cards-rating-score
-#         # 주소 span.section-result-location
-#
-#         name = c.find_element_by_css_selector("h3 > span").text
-#         try :
-#             score = c.find_element_by_css_selector("span.cards-rating-score").text
-#         except :
-#             score = "평점 없음"
-#         address = c.find_element_by_css_selector("span.section-result-location").text
-#
-#         print(name + " / " + score + " / " + address)
-#
-#     page_bar = driver.find_elements_by_css_selector("div.n7lv7yjyC35__right > *")
-#
-#     if n != 5 :
-#         page_bar[1].click()
-#     else :
-#         print("수집완료")
-#         break
-# driver.close()
+print("총 댓글 개수 : ", len(comments))
+print("정답 및 학번 포함 댓글 수 : ", id_count)
+print("오답 및 학번 없는 댓글 수 : ", len(comments)-id_count)
+print("정답자 아이디 명단")
+print(award_list)
+
+# 7 당첨자 랜덤 추출
+award = []
+
+print("치킨 당첨자 : ")
+for c in range(3):
+    pick = r.choice(award_list)
+    if pick not in award :
+        award.append(pick)
+    else:
+        continue
+    print(pick)
+print("="*20)
+
+print("베라 당첨자 : ")
+for b in range(5):
+    pick = r.choice(award_list)
+    if pick not in award :
+        award.append(pick)
+    else:
+        continue
+    print(pick)
+print("="*20)
+
+print("스벅 당첨자 : ")
+for s in range(7):
+    pick = r.choice(award_list)
+    if pick not in award :
+        award.append(pick)
+    else:
+        continue
+    print(pick)
+
+# 8 크롬 창 닫기
+driver.close()
