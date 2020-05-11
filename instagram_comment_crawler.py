@@ -12,7 +12,7 @@ driver.implicitly_wait(5)
 # 3 댓글 전체 불러오기
 
 ## 댓글 불러오는 버튼 반복 클릭
-for i in range(99) :
+for i in range(999) :
     try :
         comment_more = driver.find_element_by_css_selector("div.Igw0E.IwRSH.YBx95._4EzTm.MGdpg button.dCJp8.afkep")
         comment_more.click()
@@ -25,7 +25,7 @@ for i in range(99) :
 # 4 답글 전체 불러오기
 comment_more = driver.find_elements_by_css_selector("div.Igw0E > button.sqdOP.yWX7d,y3zJF")
 
-for i in range(99) :
+for i in range(999) :
     try:
         more_box = comment_more[i].find_element_by_css_selector("span.EizgU").text
         count = int(more_box[-3])
@@ -58,7 +58,7 @@ for i in range(99) :
 driver.implicitly_wait(3)
 containers = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK")
 comments = driver.find_elements_by_css_selector("ul.Mr508 div.C4VMK span")
-award_list = []
+award_dic = {}
 
 ##  댓글 반복 수집
 id_count = 0
@@ -69,9 +69,12 @@ for i in containers :
         std_id = comment.text
         if "6020" and ("8개" or "8새") in std_id :
             account = i.find_element_by_css_selector("a.sqdOP").text
-            print(account, "/ 학번 있음 / 정답 O", std_id)
+            print(account, "/ 학번 있음 / 정답 O /", std_id)
+            idx = std_id.index("6020")
+            id_num = std_id[idx:idx+8]
+            print("학번", id_num)
             id_count += 1
-            award_list.append(account)
+            award_dic[account] = id_num
     except :
         print("오류 발생")
 
@@ -81,7 +84,7 @@ print("정답 및 학번 포함 댓글 수 : ", id_count)
 print("오답 및 학번 없는 댓글 수 : ", len(comments)-id_count)
 print("="*20)
 print("정답자 아이디 명단")
-print(award_list)
+print(award_dic)
 print("="*20)
 
 # 7 당첨자 랜덤 추출
@@ -90,26 +93,32 @@ award = []
 print("="*20)
 print("치킨 당첨자 : ")
 for c in range(3):
-    pick = r.choice(award_list)
-    if pick not in award :
+    pick = account, id_num = r.choice(list(award_dic.items()))
+    if ( pick not in award) :
         award.append(pick)
-    print(pick)
+        print(account, id_num, sep=" / ")
 print("="*20)
+
+# if (any('geeksforgeeks' in i for i in test_tuple)) :
 
 print("베라 당첨자 : ")
 for b in range(5):
-    pick = r.choice(award_list)
-    if pick not in award :
+    pick = account, id_num = r.choice(list(award_dic.items()))
+    if ( pick not in award) :
         award.append(pick)
-    print(pick)
+        print(account, id_num, sep=" / ")
 print("="*20)
+
 
 print("스벅 당첨자 : ")
 for s in range(7):
-    pick = r.choice(award_list)
-    if pick not in award :
+    pick = account, id_num = r.choice(list(award_dic.items()))
+    if ( pick not in award) :
         award.append(pick)
-    print(pick)
+        print(account, id_num, sep=" / ")
+
+print("="*20)
+print("명지내일 성년의 날 이벤트에 참여해주셔서 감사합니다. 다음에 더 좋은 이벤트로 찾아뵙겠습니다. ")
 
 # 8 크롬 창 닫기
 driver.close()
