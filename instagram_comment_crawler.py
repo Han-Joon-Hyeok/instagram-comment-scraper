@@ -1,8 +1,13 @@
+import sys
+
 from selenium import webdriver
 import time
 import random as r
 
 # 1 웹드라이버 켜기
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
+
 driver = webdriver.Chrome("./chromedriver")
 
 # 2 인스타그램 열기
@@ -31,17 +36,19 @@ for i in range(999) :
         count = int(more_box[-3])
         if count >= 9 :
             comment_more[i].click()
-            time.sleep(0.2)
+            time.sleep(0.15)
             comment_more[i].click()
-            time.sleep(0.2)
+            time.sleep(0.15)
             comment_more[i].click()
+            time.sleep(0.15)
         elif count >= 4 :
             comment_more[i].click()
-            driver.implicitly_wait(3)
+            time.sleep(0.15)
             comment_more[i].click()
+            time.sleep(0.15)
         else :
             comment_more[i].click()
-            driver.implicitly_wait(3)
+            time.sleep(0.15)
         print("클릭을", i + 1, "번 했습니다.")
     except:
         print("답글 불러오기 완료")
@@ -85,33 +92,30 @@ print("오답 및 학번 없는 댓글 수 : ", len(comments)-id_count)
 print("="*20)
 print("정답자 아이디 명단")
 print(award_dic)
+print("정답자 : 총",len(award_dic),"명")
 print("="*20)
 
 # 7 당첨자 랜덤 추출
 award = []
 
-print("="*20)
 print("치킨 당첨자 : ")
-for c in range(3):
+while len(award) != 3 :
     pick = account, id_num = r.choice(list(award_dic.items()))
     if ( pick not in award) :
         award.append(pick)
         print(account, id_num, sep=" / ")
 print("="*20)
-
-# if (any('geeksforgeeks' in i for i in test_tuple)) :
 
 print("베라 당첨자 : ")
-for b in range(5):
+while len(award) != 8 :
     pick = account, id_num = r.choice(list(award_dic.items()))
     if ( pick not in award) :
         award.append(pick)
         print(account, id_num, sep=" / ")
 print("="*20)
 
-
 print("스벅 당첨자 : ")
-for s in range(7):
+while len(award) != 15 :
     pick = account, id_num = r.choice(list(award_dic.items()))
     if ( pick not in award) :
         award.append(pick)
