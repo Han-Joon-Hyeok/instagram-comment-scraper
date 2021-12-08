@@ -1,7 +1,6 @@
 import getpass
-
+from RandomPicker import RandomPicker
 from driver import ChromeDriver
-# from RandomPicker import RandomPicker
 
 # 1 Auto Download Chrome Webdriver (Corresponding to Chrome Browser Installed)
 driver = ChromeDriver()
@@ -33,34 +32,20 @@ driver.collect_comments()
 driver.filter_comments()
 
 # 9 Pick Random Winners
-# data = driver.answer_list
+data = driver.get_answer_list()
+rp = RandomPicker(data)
 
+# pick_winner(num)
+# pick_winner returns dictionary data
+chicken = rp.pick_winner(3)
+baskin_robbins = rp.pick_winner(8)
+starbucks = rp.pick_winner(15)
 
-# print("치킨 당첨자 : ")
-# while len(award) != 3 :
-#     pick = account, id_num = r.choice(list(award_dic.items()))
-#     if ( pick not in award) :
-#         award.append(pick)
-#         print(account, id_num, sep="/")
-# print("="*20)
+# print_winners(dictionary, filename)
+# print_winners saves csv file.
+rp.print_winners(chicken, "chicken")
+rp.print_winners(baskin_robbins, "baskin_robbins")
+rp.print_winners(starbucks, "starbucks")
 
-# print("베라 당첨자 : ")
-# while len(award) != 8 :
-#     pick = account, id_num = r.choice(list(award_dic.items()))
-#     if ( pick not in award) :
-#         award.append(pick)
-#         print(account, id_num, sep=" / ")
-# print("="*20)
-
-# print("스벅 당첨자 : ")
-# while len(award) != 15 :
-#     pick = account, id_num = r.choice(list(award_dic.items()))
-#     if ( pick not in award) :
-#         award.append(pick)
-#         print(account, id_num, sep=" / ")
-
-# print("="*20)
-# print("명지내일 성년의 날 이벤트에 참여해주셔서 감사합니다. 다음에 더 좋은 이벤트로 찾아뵙겠습니다. ")
-
-# # 8 크롬 창 닫기
-# driver.close()
+# 10 Close Chrome Driver
+driver.close()
