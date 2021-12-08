@@ -1,9 +1,8 @@
-from fake_useragent.settings import OVERRIDES
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
 
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -11,6 +10,8 @@ from fake_useragent import UserAgent
 
 import time
 import re
+import csv
+from datetime import datetime
 
 class ChromeDriver():    
     def __init__(self):
@@ -57,6 +58,7 @@ class ChromeDriver():
             print("✅ Successfully Logged in to Instagram")
         else:
             print("❌ Failed to login. Please Relaunch Script File")
+            self.driver.close()
             raise Exception("Failed to Login")
 
     def load_all_comments(self):
@@ -116,12 +118,22 @@ class ChromeDriver():
                 comment_content = comment.find_element(By.CSS_SELECTOR, comment_content_css_selector).text
                 self.comments[comment_writer] = comment_content
         except:
-            print("❌ Something is failed.")
+            print("❌ Failed to Find Browser Element. Please Keep Browser Open.")
+            raise NoSuchWindowException
         else:
             print("✅ Complete Collecting All Comments")
 
+        try:
+            self.filename = self.save_to_csv(self.comments)
+        except:
+            print("❌ Failed to Save All comments into CSV file")
+            raise Exception('Failed to Saving CSV file')
+        else:
+            print(f"✅ Successfully All Comments Saved to {self.filename}")
+
+
     def filter_comments(self):
-        self.answer_list = []
+        self.__answer_list = []
         student_id_regex = re.compile('(^6020\d+)')
         answer_regex = re.compile('8\D')
 
@@ -131,6 +143,21 @@ class ChromeDriver():
             isCorrectAnswer = answer_regex.search(content)
             if isEligibleStudentId and isCorrectAnswer:
                 std_id = isEligibleStudentId.group()
-                self.answer_list.append({"std_id": std_id, "account": writer, "content": content})
+                self.__answer_list.append({"std_id": std_id, "writer": writer, "content": content})
         
         print("✅ Complete Checking All Comments")
+
+    def get_answer_list(self):
+        return self.__answer_list
+
+    def save_to_csv(self, dict):
+        now = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+        filename = f'comments_{now}.csv'
+
+        f = open(filename, 'w', newline='')
+        wr = csv.writer(f)
+        for idx, (writer, content) in enumerate(dict.items()):
+            wr.writerow([idx + 1, writer, content.replace('\n', ' ')])
+        f.close()
+
+        return filename
