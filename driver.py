@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
 
 from webdriver_manager.chrome import ChromeDriverManager
@@ -20,6 +19,7 @@ class ChromeDriver():
         chrome_options.add_argument(f'user-agent={user_agent}')
         chrome_options.add_experimental_option("detach", True)
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        self.driver.maximize_window()
         print("🔥 Start Instagram Comments Crawler")
 
     def get(self, url):
