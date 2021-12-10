@@ -9,7 +9,7 @@ driver = ChromeDriver()
 driver.move_to_login_page()
 
 # 3 Login Instagram Account
-username = input(str("Input ID : "))            # User ID
+username = input("Input ID : ")                 # User ID
 password = getpass.getpass("Input Password : ") # User Password
 
 driver.login_to_instagram(username, password)
